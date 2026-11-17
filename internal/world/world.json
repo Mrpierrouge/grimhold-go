@@ -1,0 +1,62 @@
+
+{
+  "start": "crossroads",
+  "regions": [
+    {
+      "id": "crossroads",
+      "name": "Crossroads",
+      "description": "An abandoned crossroads surrounded by dead trees. Old signs point toward forgotten lands.",
+      "danger": 1,
+      "foes": ["goblin", "bandit", "wolf"],
+      "exits": ["ashen-marsh", "blackpine-forest"]
+    },
+    {
+      "id": "ashen-marsh",
+      "name": "Ashen Marsh",
+      "description": "A vast swamp covered in thick grey fog. Strange noises emerge from beneath the muddy waters.",
+      "danger": 1,
+      "foes": ["goblin", "skeleton", "ghoul"],
+      "exits": ["crossroads", "drowned-chapel"]
+    },
+    {
+      "id": "blackpine-forest",
+      "name": "Blackpine Forest",
+      "description": "A dark forest where sunlight never reaches the ground. Something watches travelers between the ancient trees.",
+      "danger": 2,
+      "foes": ["wolf", "dire-wolf", "goblin", "bugbear"],
+      "exits": ["crossroads", "ironfang-quarry"]
+    },
+    {
+      "id": "drowned-chapel",
+      "name": "Drowned Chapel",
+      "description": "An ancient chapel swallowed by the swamp. Its broken bells ring at night, although nobody remains inside.",
+      "danger": 3,
+      "foes": ["skeleton", "zombie", "ghoul", "wight"],
+      "exits": ["ashen-marsh", "hollow-catacombs"]
+    },
+    {
+      "id": "ironfang-quarry",
+      "name": "Ironfang Quarry",
+      "description": "An abandoned mining site filled with rusted machinery and unstable tunnels. Something massive lives underground.",
+      "danger": 2,
+      "foes": ["kobold", "orc", "ogre", "goblin"],
+      "exits": ["blackpine-forest", "hollow-catacombs"]
+    },
+    {
+      "id": "hollow-catacombs",
+      "name": "Hollow Catacombs",
+      "description": "An endless network of underground tombs. Ancient warriors rise from their graves to protect a forgotten secret.",
+      "danger": 4,
+      "foes": ["skeleton", "ghoul", "wight", "wraith", "mimic"],
+      "exits": ["drowned-chapel", "ironfang-quarry", "black-citadel"]
+    },
+    {
+      "id": "black-citadel",
+      "name": "The Black Citadel",
+      "description": "A massive fortress built from black stone. Dark magic fills its halls, and a terrible presence rules from the highest tower.",
+      "danger": 5,
+      "foes": ["vampire", "wraith", "troll", "owlbear"],
+      "exits": ["hollow-catacombs"]
+    }
+  ]
+}
