@@ -24,7 +24,7 @@ func NewGame(w world.World) *Game {
 }
 
 func (g *Game) Map() {
-	fmt.Println("Known regions:")
+	fmt.Printf("Known regions :\n\n")
 	for _, region := range g.World.Regions {
 		if region.ID == g.CurrentRegion.ID {
 			fmt.Printf("Region: %s (current)\n", region.Name)

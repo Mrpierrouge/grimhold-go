@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/Mrpierrouge/grimhold-go/internal/game"
+	"github.com/Mrpierrouge/grimhold-go/internal/repl"
 	"github.com/Mrpierrouge/grimhold-go/internal/world"
 )
 
 func main() {
-	fmt.Println("Hello world")
 	world, err := world.LoadWorld()
 	if err != nil {
 		fmt.Println("Failed to load world")
@@ -16,12 +16,19 @@ func main() {
 	}
 	fmt.Printf("Loaded world: \n")
 	game := game.NewGame(world)
-	game.Map()
-	game.Look()
-	// err = game.Travel("blackpine-forest")
-	// if err != nil {
-	// 	fmt.Println("Failed to travel to region2")
-	// 	return
-	// }
-	// game.Look()
+	if game == nil {
+		fmt.Println("Failed to create new game")
+		return
+	}
+
+	repl := repl.REPL{
+		Game:     game,
+		Commands: make(map[string]repl.CLICommand),
+	}
+	var commands = repl.ListCommands()
+
+	for _, cmd := range commands {
+		repl.Commands[cmd.Name] = cmd
+	}
+	err = repl.Run()
 }
