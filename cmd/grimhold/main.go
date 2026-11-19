@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Mrpierrouge/grimhold-go/internal/game"
+	"github.com/Mrpierrouge/grimhold-go/internal/open5e"
 	"github.com/Mrpierrouge/grimhold-go/internal/repl"
 	"github.com/Mrpierrouge/grimhold-go/internal/world"
 )
@@ -20,9 +21,12 @@ func main() {
 		fmt.Println("Failed to create new game")
 		return
 	}
+	client := open5e.NewClient()
+	defer client.Close()
 
 	repl := repl.REPL{
 		Game:     game,
+		Client:   client,
 		Commands: make(map[string]repl.CLICommand),
 	}
 	var commands = repl.ListCommands()
