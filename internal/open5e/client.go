@@ -42,7 +42,6 @@ func (c *Client) GetMonsters(pageURL string) (MonstersResponse, error) {
 	}
 
 	if data, found := c.getCached(pageURL); found {
-		fmt.Println("[CACHE] Returning cached page")
 		return data, nil
 	}
 
@@ -66,3 +65,28 @@ func (c *Client) GetMonsters(pageURL string) (MonstersResponse, error) {
 	return monstersResponse, nil
 }
 
+func (c *Client) InspectMonster(name string) (MonstersResponse, error) {
+	url := fmt.Sprintf("%s%s/?name__iexact=%s", baseURL, monstersEndpoint, name)
+	if data, found := c.getCached(url); found {
+		return data, nil
+	}
+
+	var monstersResponse MonstersResponse
+
+	resp, err := c.HTTPClient.Get(url)
+	if err != nil {
+		return MonstersResponse{}, fmt.Errorf("fetching monster: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return MonstersResponse{}, fmt.Errorf("Open5e returned status: %s", resp.Status)
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&monstersResponse); err != nil {
+		return MonstersResponse{}, fmt.Errorf("decoding monsters: %w", err)
+	}
+	c.setCached(url, monstersResponse)
+
+	return monstersResponse, nil
+}

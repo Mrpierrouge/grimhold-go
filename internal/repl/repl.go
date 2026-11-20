@@ -74,7 +74,7 @@ func (r *REPL) Bestiary() error {
 		fmt.Println("\n--- Grimhold Bestiary ---")
 
 		for _, monster := range page.Results {
-			fmt.Printf("Name: %s | HP: %d | AC: %d\n", monster.Name, monster.HP, monster.AC)
+			fmt.Printf("Name: %s \n", monster.Name)
 		}
 
 		fmt.Println("\nNavigation:")
@@ -181,6 +181,33 @@ func (r *REPL) ListCommands() []CLICommand {
 			Description: "Show a list of monsters from the Open5e API",
 			Callback: func(args []string) error {
 				return r.Bestiary()
+			},
+		},
+		{
+			Name:        "inspect",
+			Description: "Inspect a monster by name",
+			Callback: func(args []string) error {
+				if len(args) == 0 {
+					return fmt.Errorf("Please provide a monster name.")
+				}
+				monsterName := strings.NewReplacer(
+					" ", "+",
+					"-", "+",
+					"_", "+",
+				).Replace(strings.Join(args, " "))
+				monsterResponse, err := r.Client.InspectMonster(monsterName)
+				if len(monsterResponse.Results) == 0 {
+					return fmt.Errorf("No monster found with the name: %s", monsterName)
+				}
+				monster := monsterResponse.Results[0]
+				if err != nil {
+					return fmt.Errorf("Failed to inspect monster: %v", err)
+				}
+				fmt.Printf("Name: %s\n", monster.Name)
+				fmt.Printf("HP: %d\n", monster.HP)
+				fmt.Printf("Armor: %d\n", monster.AC)
+				fmt.Printf("XP: %d\n", monster.Experience)
+				return nil
 			},
 		},
 	}
