@@ -26,7 +26,6 @@ func main() {
 
 	repl := repl.REPL{
 		Game:     game,
-		Client:   client,
 		Commands: make(map[string]repl.CLICommand),
 	}
 	var commands = repl.ListCommands()

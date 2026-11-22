@@ -9,6 +9,8 @@ type Character struct {
 	XP          int
 	AttackBonus int
 	Weapon      string
+	Armor       int
+	Dexterity   int
 
 	RestedInRegion bool
 }
@@ -20,6 +22,8 @@ func NewCharacter() Character {
 		Level:       1,
 		XP:          0,
 		AttackBonus: 2,
+		Armor:       10,
+		Dexterity:   1,
 		Weapon:      "Rusty Sword",
 	}
 }

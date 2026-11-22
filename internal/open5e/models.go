@@ -4,10 +4,10 @@ type Monster struct {
 	Name        string `json:"name"`
 	Description string `json:"desc"`
 
-	HP          int    `json:"hit_points"`
-	AC          int    `json:"armor_class"`
-	Experience  int    `json:"experience_points"`
-
+	HP              int     `json:"hit_points"`
+	AC              int     `json:"armor_class"`
+	Experience      int     `json:"experience_points"`
+	ChallengeRating float64 `json:"challenge_rating"`
 }
 
 type MonstersResponse struct {

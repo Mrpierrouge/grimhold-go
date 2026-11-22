@@ -65,28 +65,31 @@ func (c *Client) GetMonsters(pageURL string) (MonstersResponse, error) {
 	return monstersResponse, nil
 }
 
-func (c *Client) InspectMonster(name string) (MonstersResponse, error) {
+func (c *Client) GetMonster(name string) (Monster, error) {
 	url := fmt.Sprintf("%s%s/?name__iexact=%s", baseURL, monstersEndpoint, name)
 	if data, found := c.getCached(url); found {
-		return data, nil
+		return data.Results[0], nil
 	}
 
 	var monstersResponse MonstersResponse
 
 	resp, err := c.HTTPClient.Get(url)
 	if err != nil {
-		return MonstersResponse{}, fmt.Errorf("fetching monster: %w", err)
+		return Monster{}, fmt.Errorf("fetching monster: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return MonstersResponse{}, fmt.Errorf("Open5e returned status: %s", resp.Status)
+		return Monster{}, fmt.Errorf("Open5e returned status: %s", resp.Status)
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&monstersResponse); err != nil {
-		return MonstersResponse{}, fmt.Errorf("decoding monsters: %w", err)
+		return Monster{}, fmt.Errorf("decoding monsters: %w", err)
+	}
+	if len(monstersResponse.Results) == 0 {
+		return Monster{}, fmt.Errorf("No monster found with the name: %s", name)
 	}
 	c.setCached(url, monstersResponse)
 
-	return monstersResponse, nil
+	return monstersResponse.Results[0], nil
 }

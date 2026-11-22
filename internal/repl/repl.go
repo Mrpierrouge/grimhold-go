@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/Mrpierrouge/grimhold-go/internal/game"
-	"github.com/Mrpierrouge/grimhold-go/internal/open5e"
 )
 
 type CLICommand struct {
@@ -20,7 +19,6 @@ type CLICommand struct {
 
 type REPL struct {
 	Game     *game.Game
-	Client   *open5e.Client
 	Commands map[string]CLICommand
 	Scanner  *bufio.Scanner
 }
@@ -65,7 +63,7 @@ func (r *REPL) Help() {
 }
 
 func (r *REPL) Bestiary() error {
-	page, err := r.Client.GetMonsters("")
+	page, err := r.Game.Client.GetMonsters("")
 	if err != nil {
 		return fmt.Errorf("loading bestiary: %w", err)
 	}
@@ -104,7 +102,7 @@ func (r *REPL) Bestiary() error {
 				fmt.Println("You are already on the last page.")
 				continue
 			}
-			page, err = r.Client.GetMonsters(*page.Next)
+			page, err = r.Game.Client.GetMonsters(*page.Next)
 			if err != nil {
 				return fmt.Errorf("fetching next page: %w", err)
 			}
@@ -115,7 +113,7 @@ func (r *REPL) Bestiary() error {
 				continue
 			}
 
-			page, err = r.Client.GetMonsters(*page.Previous)
+			page, err = r.Game.Client.GetMonsters(*page.Previous)
 			if err != nil {
 				return fmt.Errorf("fetching previous page: %w", err)
 			}
@@ -133,6 +131,58 @@ func (r *REPL) Bestiary() error {
 			return fmt.Errorf("changing bestiary page: %w", err)
 		}
 	}
+}
+
+func (r *REPL) Fight() error {
+	if r.Game.CurrentFoe == nil {
+		return fmt.Errorf("there is no active enemy; use explore first")
+	}
+
+	fmt.Println("\nCombat started!")
+	fmt.Println("Commands: fight | flee")
+
+	for r.Game.CurrentFoe != nil {
+		fmt.Print("\ncombat > ")
+
+		input, err := r.ReadInput()
+		if err != nil {
+			return err
+		}
+
+		switch strings.ToLower(input) {
+		case "fight":
+			defeated := r.Game.PlayerAttack()
+
+			if defeated {
+				r.Game.Victory()
+				return nil
+			}
+
+			r.Game.FoeAttack()
+
+			if r.Game.Character.HP <= 0 {
+				r.Game.Defeat()
+				return nil
+			}
+
+		case "flee":
+			escaped := r.Game.Flee()
+
+			if escaped {
+				return nil
+			}
+
+			if r.Game.Character.HP <= 0 {
+				r.Game.Defeat()
+				return nil
+			}
+
+		default:
+			fmt.Println("Use fight or flee.")
+		}
+	}
+
+	return nil
 }
 
 func (r *REPL) ListCommands() []CLICommand {
@@ -194,11 +244,7 @@ func (r *REPL) ListCommands() []CLICommand {
 					"-", "+",
 					"_", "+",
 				).Replace(strings.Join(args, " "))
-				monsterResponse, err := r.Client.InspectMonster(monsterName)
-				if len(monsterResponse.Results) == 0 {
-					return fmt.Errorf("No monster found with the name: %s", monsterName)
-				}
-				monster := monsterResponse.Results[0]
+				monster, err := r.Game.Client.GetMonster(monsterName)
 				if err != nil {
 					return fmt.Errorf("Failed to inspect monster: %v", err)
 				}
@@ -222,6 +268,20 @@ func (r *REPL) ListCommands() []CLICommand {
 			Description: "Restore your HP",
 			Callback: func(args []string) error {
 				return r.Game.Character.Rest()
+			},
+		},
+		{
+			Name:        "explore",
+			Description: "Explore the current region and search for enemies",
+			Callback: func(args []string) error {
+				return r.Game.Explore()
+			},
+		},
+		{
+			Name:        "fight",
+			Description: "Fight the current enemy",
+			Callback: func(args []string) error {
+				return r.Fight()
 			},
 		},
 	}

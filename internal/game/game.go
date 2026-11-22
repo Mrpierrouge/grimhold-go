@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/Mrpierrouge/grimhold-go/internal/open5e"
 	"github.com/Mrpierrouge/grimhold-go/internal/world"
 )
 
@@ -11,6 +12,8 @@ type Game struct {
 	World         world.World
 	CurrentRegion world.Region
 	Character     Character
+	Client        *open5e.Client
+	CurrentFoe    *open5e.Monster
 }
 
 func NewGame(w world.World) *Game {
@@ -22,6 +25,7 @@ func NewGame(w world.World) *Game {
 		World:         w,
 		CurrentRegion: startRegion,
 		Character:     NewCharacter(),
+		Client:        open5e.NewClient(),
 	}
 }
 
