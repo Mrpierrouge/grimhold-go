@@ -291,6 +291,24 @@ func (r *REPL) ListCommands() []CLICommand {
 				return r.Game.ShowSlainBestiary()
 			},
 		},
+		{
+			Name:        "save",
+			Description: "Save your current game",
+			Callback: func(args []string) error {
+				if err := r.Game.Save(); err != nil {
+					return err
+				}
+				fmt.Println("Game saved successfully!")
+				return nil
+			},
+		},
+		{
+			Name:        "load",
+			Description: "Load your saved game",
+			Callback: func(args []string) error {
+				return r.Game.Load()
+			},
+		},
 	}
 	return commands
 }

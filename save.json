@@ -1,0 +1,17 @@
+{
+  "current_region_id": "crossroads",
+  "character": {
+    "HP": 20,
+    "MaxHP": 25,
+    "Level": 2,
+    "XP": 50,
+    "AttackBonus": 3,
+    "Weapon": "Rusty Sword",
+    "Armor": 10,
+    "Dexterity": 1,
+    "RestedInRegion": false
+  },
+  "slain_bestiary": {
+    "Goblin": 1
+  }
+}
