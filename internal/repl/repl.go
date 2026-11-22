@@ -284,6 +284,13 @@ func (r *REPL) ListCommands() []CLICommand {
 				return r.Fight()
 			},
 		},
+		{
+			Name:        "slained",
+			Description: "Show the list of monsters you have slain",
+			Callback: func(args []string) error {
+				return r.Game.ShowSlainBestiary()
+			},
+		},
 	}
 	return commands
 }

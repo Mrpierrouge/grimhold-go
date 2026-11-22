@@ -14,6 +14,7 @@ type Game struct {
 	Character     Character
 	Client        *open5e.Client
 	CurrentFoe    *open5e.Monster
+	SlainBestiary map[string]int
 }
 
 func NewGame(w world.World) *Game {
@@ -26,6 +27,7 @@ func NewGame(w world.World) *Game {
 		CurrentRegion: startRegion,
 		Character:     NewCharacter(),
 		Client:        open5e.NewClient(),
+		SlainBestiary: make(map[string]int),
 	}
 }
 
@@ -68,4 +70,16 @@ func (g *Game) Travel(regionID string) error {
 
 	return errors.New("You can't travel to that region from here.")
 
+}
+func (g *Game) ShowSlainBestiary() error {
+	if len(g.SlainBestiary) == 0 {
+		fmt.Println("You haven't slain any monsters yet.")
+		return nil
+	}
+
+	fmt.Println("Monsters you have slain:")
+	for monster, count := range g.SlainBestiary {
+		fmt.Printf("- %s: %d\n", monster, count)
+	}
+	return nil
 }

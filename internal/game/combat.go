@@ -151,6 +151,6 @@ func (g *Game) Victory() {
 	fmt.Printf("\nYou defeated %s!\n", foe.Name)
 	fmt.Printf("You gain %d XP.\n", foe.Experience)
 	g.Character.AddXP(foe.Experience)
-
+	g.SlainBestiary[foe.Name]++
 	g.CurrentFoe = nil
 }
