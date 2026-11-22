@@ -168,7 +168,6 @@ func (r *REPL) ListCommands() []CLICommand {
 				if len(args) == 0 {
 					return fmt.Errorf("Please provide a region ID.")
 				}
-				fmt.Println("Traveling to:", args[0])
 				err := r.Game.Travel(args[0])
 				if err != nil {
 					return fmt.Errorf("Failed to travel to region: %v", err)
@@ -208,6 +207,21 @@ func (r *REPL) ListCommands() []CLICommand {
 				fmt.Printf("Armor: %d\n", monster.AC)
 				fmt.Printf("XP: %d\n", monster.Experience)
 				return nil
+			},
+		},
+		{
+			Name:        "character",
+			Description: "Show your character sheet",
+			Callback: func(args []string) error {
+				r.Game.Character.Show()
+				return nil
+			},
+		},
+		{
+			Name:        "rest",
+			Description: "Restore your HP",
+			Callback: func(args []string) error {
+				return r.Game.Character.Rest()
 			},
 		},
 	}

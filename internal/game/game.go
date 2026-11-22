@@ -10,6 +10,7 @@ import (
 type Game struct {
 	World         world.World
 	CurrentRegion world.Region
+	Character     Character
 }
 
 func NewGame(w world.World) *Game {
@@ -20,6 +21,7 @@ func NewGame(w world.World) *Game {
 	return &Game{
 		World:         w,
 		CurrentRegion: startRegion,
+		Character:     NewCharacter(),
 	}
 }
 
@@ -54,6 +56,8 @@ func (g *Game) Travel(regionID string) error {
 				return err
 			}
 			g.CurrentRegion = newRegion
+			g.Character.RestedInRegion = false
+			fmt.Println("You travel to: " + newRegion.Name)
 			return nil
 		}
 	}
